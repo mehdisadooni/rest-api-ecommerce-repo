@@ -3,14 +3,11 @@
 namespace Modules\Category\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Category\Repositories\CategoriesRepositoryInterface;
+use Modules\Category\Repositories\EloquentCategoriesRepository;
 
 class CategoryServiceProvider extends ServiceProvider
 {
-
-    public function boot()
-    {
-        //
-    }
 
     /**
      * Register the service provider.
@@ -22,16 +19,13 @@ class CategoryServiceProvider extends ServiceProvider
         //
     }
 
-
-
     /**
-     * Get the services provided by the provider.
-     *
-     * @return array
+     * @return void
      */
-    public function provides()
+    public function boot()
     {
-        return [];
+        $this->app->bind(CategoriesRepositoryInterface::class, EloquentCategoriesRepository::class);
     }
+
 
 }

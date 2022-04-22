@@ -7,16 +7,26 @@ use Illuminate\Support\Facades\DB;
 use Modules\Category\Entities\Category;
 use Modules\Category\Http\Requests\StoreRequest;
 use Modules\Category\Http\Requests\UpdateRequest;
+use Modules\Category\Repositories\CategoriesRepositoryInterface;
 use Modules\Category\Transformers\V1\CategoryResource;
 
 class CategoryController extends Controller
 {
+
+    private $repository;
+
+    public function __construct(CategoriesRepositoryInterface $brands)
+    {
+        $this->repository = $brands;
+    }
+
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $categories = Category::paginate(10);
+        $categories = $this->repository->paginate(10);
         return successResponse([
             'categories' => CategoryResource::collection($categories),
             'links' => CategoryResource::collection($categories)->response()->getData()->links,
@@ -30,7 +40,7 @@ class CategoryController extends Controller
     public function store(StoreRequest $request)
     {
         DB::beginTransaction();
-        $category = Category::create([
+        $category = $this->repository->create([
             'name' => $request->name,
             'parent_id' => $request->parent_id,
             'description' => $request->description,
@@ -43,23 +53,24 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Category $category)
+    public function show($category)
     {
+        $category = $this->repository->find($category);
         return successResponse(['category' => new CategoryResource($category)], 200);
-
     }
 
 
     /**
      * Update the specified resource in storage.
      * @param UpdateRequest $request
-     * @param Category $category
+     * @param  $category
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateRequest $request, Category $category)
+    public function update(UpdateRequest $request, $category)
     {
+        $category = $this->repository->find($category);
         DB::beginTransaction();
-        $category->update([
+        $this->repository->update($category, [
             'name' => $request->name,
             'parent_id' => $request->parent_id,
             'description' => $request->description,
@@ -70,21 +81,23 @@ class CategoryController extends Controller
 
     /**
      * Display the children  resource from storage.
-     * @param Category $category
+     * @param $category
      * @return \Illuminate\Http\JsonResponse
      */
-    public function children(Category $category)
+    public function children($category)
     {
+        $category = $this->repository->find($category);
         return successResponse(['category' => new CategoryResource($category->load('children'))], 200);
     }
 
     /**
      * Display the parent  resource from storage.
-     * @param Category $category
+     * @param $category
      * @return mixed
      */
-    public function parent(Category $category)
+    public function parent($category)
     {
+        $category = $this->repository->find($category);
         return successResponse(['category' => new CategoryResource($category->load('parent'))], 200);
     }
 }
