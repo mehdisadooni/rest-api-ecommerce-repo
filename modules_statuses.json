@@ -1,0 +1,10 @@
+{
+    "Core": true,
+    "Brand": true,
+    "Category": true,
+    "Product": true,
+    "Province": true,
+    "City": true,
+    "User": true,
+    "Purchase": true
+}
