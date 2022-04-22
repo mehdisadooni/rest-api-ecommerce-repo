@@ -3,14 +3,11 @@
 namespace Modules\City\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\City\Repositories\CitiesRepositoryInterface;
+use Modules\City\Repositories\EloquentCitiesRepository;
 
 class CityServiceProvider extends ServiceProvider
 {
-
-    public function boot()
-    {
-        //
-    }
 
     /**
      * Register the service provider.
@@ -23,14 +20,10 @@ class CityServiceProvider extends ServiceProvider
     }
 
     /**
-     * Get the services provided by the provider.
-     *
-     * @return array
+     * @return void
      */
-    public function provides()
+    public function boot()
     {
-        return [];
+        $this->app->bind(CitiesRepositoryInterface::class, EloquentCitiesRepository::class);
     }
-
-
 }

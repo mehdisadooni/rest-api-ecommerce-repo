@@ -4,7 +4,6 @@ namespace Modules\Brand\Http\Controllers\Api\V1;
 
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
-use Modules\Brand\Entities\Brand;
 use Modules\Brand\Http\Requests\StoreRequest;
 use Modules\Brand\Http\Requests\UpdateRequest;
 use Modules\Brand\Repositories\BrandsRepositoryInterface;
@@ -15,9 +14,9 @@ class BrandController extends Controller
 
     private $repository;
 
-    public function __construct(BrandsRepositoryInterface $brands)
+    public function __construct(BrandsRepositoryInterface $repository)
     {
-        $this->repository = $brands;
+        $this->repository = $repository;
     }
 
     /**

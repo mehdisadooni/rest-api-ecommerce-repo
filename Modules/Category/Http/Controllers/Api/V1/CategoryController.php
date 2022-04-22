@@ -15,9 +15,9 @@ class CategoryController extends Controller
 
     private $repository;
 
-    public function __construct(CategoriesRepositoryInterface $brands)
+    public function __construct(CategoriesRepositoryInterface $repository)
     {
-        $this->repository = $brands;
+        $this->repository = $repository;
     }
 
 
