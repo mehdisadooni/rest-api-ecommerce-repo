@@ -14,6 +14,8 @@ abstract class BaseRepository
 
     abstract function find($id);
 
+    abstract function findOrFail($id);
+
     abstract function update($model, array $data);
 
     abstract function delete($model);

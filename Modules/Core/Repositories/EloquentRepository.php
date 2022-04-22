@@ -36,6 +36,11 @@ class EloquentRepository extends BaseRepository
         return $this->model->find($id);
     }
 
+    public function findOrFail($id)
+    {
+        return $this->model->findOrFail($id);
+    }
+
     public function update($model, array $data)
     {
         return $model->update($data);
