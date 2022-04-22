@@ -3,15 +3,11 @@
 namespace Modules\Brand\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Brand\Repositories\BrandsRepositoryInterface;
+use Modules\Brand\Repositories\EloquentBrandsRepository;
 
 class BrandServiceProvider extends ServiceProvider
 {
-
-    public function boot()
-    {
-
-    }
-
     /**
      * Register the service provider.
      *
@@ -19,16 +15,15 @@ class BrandServiceProvider extends ServiceProvider
      */
     public function register()
     {
+
     }
 
     /**
-     * Get the services provided by the provider.
-     *
-     * @return array
+     * @return void
      */
-    public function provides()
+    public function boot()
     {
-        return [];
+        $this->app->bind(BrandsRepositoryInterface::class, EloquentBrandsRepository::class);
     }
 
 }

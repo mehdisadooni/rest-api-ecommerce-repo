@@ -7,17 +7,25 @@ use Illuminate\Support\Facades\DB;
 use Modules\Brand\Entities\Brand;
 use Modules\Brand\Http\Requests\StoreRequest;
 use Modules\Brand\Http\Requests\UpdateRequest;
+use Modules\Brand\Repositories\BrandsRepositoryInterface;
 use Modules\Brand\Transformers\V1\BrandResource;
-use function successResponse;
 
 class BrandController extends Controller
 {
+
+    private $repository;
+
+    public function __construct(BrandsRepositoryInterface $brands)
+    {
+        $this->repository = $brands;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $brands = Brand::paginate(10);
+        $brands = $this->repository->paginate(10);
         return successResponse([
             'brands' => BrandResource::collection($brands),
             'links' => BrandResource::collection($brands)->response()->getData()->links,
@@ -34,7 +42,7 @@ class BrandController extends Controller
     public function store(StoreRequest $request)
     {
         DB::beginTransaction();
-        $brand = Brand::create([
+        $brand = $this->repository->create([
             'name' => $request->name,
             'display_name' => $request->display_name,
         ]);
@@ -44,21 +52,23 @@ class BrandController extends Controller
 
     /**
      * Show the specified resource.
-     * @param Brand $brand
+     * @param $brand
      */
-    public function show(Brand $brand)
+    public function show($brand)
     {
+        $brand = $this->repository->find($brand);
         return successResponse(['brand' => new BrandResource($brand)], 200);
     }
 
     /**
      * Update the specified resource in storage.
      * @param UpdateRequest $request
-     * @param Brand $brand
+     * @param $brand
      */
-    public function update(UpdateRequest $request, Brand $brand)
+    public function update(UpdateRequest $request, $brand)
     {
-        $brand->update([
+        $brand = $this->repository->find($brand);
+        $this->repository->update($brand, [
             'name' => $request->name,
             'display_name' => $request->display_name
         ]);
@@ -67,11 +77,12 @@ class BrandController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     * @param Brand $brand
+     * @param $brand
      */
-    public function destroy(Brand $brand)
+    public function destroy($brand)
     {
-        $brand->delete();
+        $brand = $this->repository->find($brand);
+        $this->repository->delete($brand);
         return successResponse(['brand' => new BrandResource($brand)], 200, 'برند مورد نظر با موفقیت حذف شد.');
     }
 }
