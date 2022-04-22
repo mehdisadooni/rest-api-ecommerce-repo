@@ -3,14 +3,11 @@
 namespace Modules\Province\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Province\Repositories\EloquentProvincesRepository;
+use Modules\Province\Repositories\ProvincesRepositoryInterface;
 
 class ProvinceServiceProvider extends ServiceProvider
 {
-
-    public function boot()
-    {
-        //
-    }
 
     /**
      * Register the service provider.
@@ -22,15 +19,11 @@ class ProvinceServiceProvider extends ServiceProvider
         //
     }
 
-
     /**
-     * Get the services provided by the provider.
-     *
-     * @return array
+     * @return void
      */
-    public function provides()
+    public function boot()
     {
-        return [];
+        $this->app->bind(ProvincesRepositoryInterface::class, EloquentProvincesRepository::class);
     }
-
 }

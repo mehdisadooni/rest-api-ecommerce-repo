@@ -8,17 +8,25 @@ use Illuminate\Support\Facades\DB;
 use Modules\Province\Entities\Province;
 use Modules\Province\Http\Requests\StoreRequest;
 use Modules\Province\Http\Requests\UpdateRequest;
+use Modules\Province\Repositories\ProvincesRepositoryInterface;
 use Modules\Province\Transformers\ProvinceResource;
 
 class ProvinceController extends Controller
 {
+    private $repository;
+
+    public function __construct(ProvincesRepositoryInterface $repository)
+    {
+        $this->repository = $repository;
+    }
+
     /**
      * @return \Illuminate\Http\JsonResponse
      * Return All Provinces with paginate
      */
     public function index()
     {
-        $provinces = Province::paginate();
+        $provinces = $this->repository->paginate(10);
         return successResponse([
             'provinces' => ProvinceResource::collection($provinces->load('cities')),
             'links' => ProvinceResource::collection($provinces)->response()->getData()->links,
@@ -34,7 +42,7 @@ class ProvinceController extends Controller
     public function store(StoreRequest $request)
     {
         DB::beginTransaction();
-        $province = Province::create([
+        $province = $this->repository->create([
             'name' => $request->name,
         ]);
         DB::commit();
@@ -43,11 +51,12 @@ class ProvinceController extends Controller
 
     /**
      * Show the specified resource.
-     * @param Province $province
+     * @param $province
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Province $province)
+    public function show($province)
     {
+        $province = $this->repository->find($province);
         return successResponse(['province' => new ProvinceResource($province)], 200);
     }
 
@@ -55,12 +64,13 @@ class ProvinceController extends Controller
     /**
      * Update the specified resource in storage.
      * @param UpdateRequest $request
-     * @param Province $province
+     * @param $province
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateRequest $request, Province $province)
+    public function update(UpdateRequest $request, $province)
     {
-        $province->update([
+        $province = $this->repository->find($province);
+        $this->repository->update($province, [
             'name' => $request->name,
         ]);
         return successResponse(['province' => new ProvinceResource($province)], 201, 'استان مورد نظر با موفقیت ویرایش شد.');
@@ -68,11 +78,12 @@ class ProvinceController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     * @param Province $province
+     * @param $province
      */
-    public function destroy(Province $province)
+    public function destroy($province)
     {
-        $province->delete();
+        $province = $this->repository->find($province);
+        $this->repository->delete($province);
         return successResponse(['province' => new ProvinceResource($province)], 200, 'استان مورد نظر با موفقیت حذف شد.');
     }
 }
