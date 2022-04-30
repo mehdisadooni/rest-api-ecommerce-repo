@@ -69,9 +69,9 @@ class BrandController extends Controller
         $brand = $this->repository->find($brand);
         $this->repository->update($brand, [
             'name' => $request->name,
-            'display_name' => $request->display_name
+            'display_name' => $request->display_name ? : $brand->display_name
         ]);
-        return successResponse(['brand' => new BrandResource($brand)], 201, 'برند مورد نظر با موفقیت ویرایش شد.');
+        return successResponse(['brand' => new BrandResource($brand)], 200, 'برند مورد نظر با موفقیت ویرایش شد.');
     }
 
     /**

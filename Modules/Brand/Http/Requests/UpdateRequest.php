@@ -15,7 +15,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'display_name' => "required|unique:brands,display_name,{$this->brand->id}"
+            'display_name' => "nullable|unique:brands,display_name,{$this->id}"
         ];
     }
 
