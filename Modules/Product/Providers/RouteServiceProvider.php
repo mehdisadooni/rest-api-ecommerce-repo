@@ -1,22 +1,18 @@
 <?php
 
-namespace Modules\Core\Providers;
+namespace Modules\Product\Providers;
 
-use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
 {
-
     /**
      * The module namespace to assume when generating URLs to actions.
      *
      * @var string
      */
-    protected $moduleNamespace = 'Modules\Core\Http\Controllers';
+    protected $moduleNamespace = 'Modules\Product\Http\Controllers';
 
     /**
      * Called before routes are registered.
@@ -39,7 +35,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->mapApiRoutes();
 
-        $this->mapWebRoutes();
+//        $this->mapWebRoutes();
     }
 
     /**
@@ -52,8 +48,8 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapWebRoutes()
     {
         Route::middleware('web')
-            ->namespace($this->moduleNamespace)
-            ->group(module_path('Core', '/Routes/web.php'));
+//            ->namespace($this->moduleNamespace)
+            ->group(module_path('Product', '/Routes/web.php'));
     }
 
     /**
@@ -67,7 +63,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::prefix('api')
             ->middleware('api')
-            ->namespace($this->moduleNamespace)
-            ->group(module_path('Core', '/Routes/api.php'));
+//            ->namespace($this->moduleNamespace)
+            ->group(module_path('Product', '/Routes/api.php'));
     }
 }

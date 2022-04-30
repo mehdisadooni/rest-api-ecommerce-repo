@@ -13,7 +13,7 @@ class LoginController extends Controller
      * @param LoginRequest $request
      * Login user Methode
      */
-    public function login(LoginRequest $request)
+    public function __invoke(LoginRequest $request)
     {
         $user = User::where('email', $request->email)->first();
         if (!$user) {

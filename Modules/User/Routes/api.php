@@ -20,8 +20,8 @@ use \Modules\User\Http\Controllers\Api\V1\Auth\LoginController;
 Route::prefix('v1')->group(function () {
     Route::name('auth.')->group(function () {
         Route::middleware('guest')->group(function () {
-            Route::post('/register', [RegisterController::class, 'register'])->name('register');
-            Route::post('/login', [LoginController::class, 'login'])->name('login');
+            Route::post('/register', RegisterController::class)->name('register');
+            Route::post('/login', LoginController::class)->name('login');
         });
 
         Route::group(['middleware' => 'auth:sanctum'], function () {

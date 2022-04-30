@@ -13,7 +13,7 @@ class RegisterController extends Controller
      * @param RegisterRequest $request
      * Register User Methode
      */
-    public function register(RegisterRequest $request)
+    public function __invoke(RegisterRequest $request)
     {
         $user = User::create([
             'name' => $request->name,
