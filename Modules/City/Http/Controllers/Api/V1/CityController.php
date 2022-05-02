@@ -11,13 +11,14 @@ use Modules\City\Repositories\CitiesRepositoryInterface;
 use Modules\City\Transformers\CityResource;
 use Modules\Province\Entities\Province;
 use Modules\Province\Repositories\ProvincesRepositoryInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class CityController extends Controller
 {
     private $repository;
     private $provincesRepository;
 
-    public function __construct(CitiesRepositoryInterface $repository,ProvincesRepositoryInterface $provincesRepository)
+    public function __construct(CitiesRepositoryInterface $repository, ProvincesRepositoryInterface $provincesRepository)
     {
         $this->repository = $repository;
         $this->provincesRepository = $provincesRepository;
@@ -34,7 +35,7 @@ class CityController extends Controller
             'cities' => CityResource::collection($provinces->load('province')),
             'links' => CityResource::collection($provinces)->response()->getData()->links,
             'meta' => CityResource::collection($provinces)->response()->getData()->meta,
-        ], 200);
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -45,12 +46,12 @@ class CityController extends Controller
     public function store(StoreRequest $request)
     {
         DB::beginTransaction();
-        $province =  $this->provincesRepository->findOrFail($request->province_id);
+        $province = $this->provincesRepository->findOrFail($request->province_id);
         $city = $province->cities()->create([
             'name' => $request->name,
         ]);
         DB::commit();
-        return successResponse(['city' => new CityResource($city)], 201, 'شهرستان با موفقیت ایجاد شد.');
+        return successResponse(['city' => new CityResource($city)], Response::HTTP_CREATED, 'شهرستان با موفقیت ایجاد شد.');
     }
 
     /**
@@ -61,7 +62,7 @@ class CityController extends Controller
     public function show($city)
     {
         $city = $this->repository->find($city);
-        return successResponse(['city' => new CityResource($city)], 200);
+        return successResponse(['city' => new CityResource($city)], Response::HTTP_OK);
     }
 
     /**
@@ -75,8 +76,9 @@ class CityController extends Controller
         $city = $this->repository->find($city);
         $this->repository->update($city, [
             'name' => $request->name,
+            'province_id' => $request->province_id ?: $city->province_id,
         ]);
-        return successResponse(['city' => new CityResource($city)], 201, 'شهرستان مورد نظر با موفقیت ویرایش شد.');
+        return successResponse(['city' => new CityResource($city)], Response::HTTP_OK, 'شهرستان مورد نظر با موفقیت ویرایش شد.');
     }
 
     /**
@@ -87,7 +89,7 @@ class CityController extends Controller
     {
         $city = $this->repository->find($city);
         $this->repository->delete($city);
-        return successResponse(['city' => new CityResource($city)], 200, 'شهرستان مورد نظر با موفقیت حذف شد.');
+        return successResponse(['city' => new CityResource($city)], Response::HTTP_OK, 'شهرستان مورد نظر با موفقیت حذف شد.');
     }
 
 }
