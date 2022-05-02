@@ -16,7 +16,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'parent_id' => 'required|integer'
+            'parent_id' => 'nullable'
         ];
     }
 

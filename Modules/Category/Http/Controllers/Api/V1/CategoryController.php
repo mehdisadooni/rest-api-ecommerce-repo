@@ -9,6 +9,7 @@ use Modules\Category\Http\Requests\StoreRequest;
 use Modules\Category\Http\Requests\UpdateRequest;
 use Modules\Category\Repositories\CategoriesRepositoryInterface;
 use Modules\Category\Transformers\V1\CategoryResource;
+use Symfony\Component\HttpFoundation\Response;
 
 class CategoryController extends Controller
 {
@@ -31,7 +32,7 @@ class CategoryController extends Controller
             'categories' => CategoryResource::collection($categories),
             'links' => CategoryResource::collection($categories)->response()->getData()->links,
             'meta' => CategoryResource::collection($categories)->response()->getData()->meta,
-        ], 200);
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -46,7 +47,7 @@ class CategoryController extends Controller
             'description' => $request->description,
         ]);
         DB::commit();
-        return successResponse(['category' => new CategoryResource($category)], 201, 'دسته بندی با موفقیت ایجاد شد.');
+        return successResponse(['category' => new CategoryResource($category)], Response::HTTP_CREATED, 'دسته بندی با موفقیت ایجاد شد.');
 
     }
 
@@ -56,7 +57,7 @@ class CategoryController extends Controller
     public function show($category)
     {
         $category = $this->repository->find($category);
-        return successResponse(['category' => new CategoryResource($category)], 200);
+        return successResponse(['category' => new CategoryResource($category)], Response::HTTP_OK);
     }
 
 
@@ -72,11 +73,11 @@ class CategoryController extends Controller
         DB::beginTransaction();
         $this->repository->update($category, [
             'name' => $request->name,
-            'parent_id' => $request->parent_id,
+            'parent_id' => $request->parent_id ?: 0,
             'description' => $request->description,
         ]);
         DB::commit();
-        return successResponse(['category' => new CategoryResource($category)], 201, 'دسته بندی با موفقیت ویرایش شد.');
+        return successResponse(['category' => new CategoryResource($category)], Response::HTTP_OK, 'دسته بندی با موفقیت ویرایش شد.');
     }
 
     /**
@@ -87,7 +88,7 @@ class CategoryController extends Controller
     public function children($category)
     {
         $category = $this->repository->find($category);
-        return successResponse(['category' => new CategoryResource($category->load('children'))], 200);
+        return successResponse(['category' => new CategoryResource($category->load('children'))], Response::HTTP_OK);
     }
 
     /**
@@ -98,6 +99,17 @@ class CategoryController extends Controller
     public function parent($category)
     {
         $category = $this->repository->find($category);
-        return successResponse(['category' => new CategoryResource($category->load('parent'))], 200);
+        return successResponse(['category' => new CategoryResource($category->load('parent'))], Response::HTTP_OK);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     * @param $category
+     */
+    public function destroy($category)
+    {
+        $category = $this->repository->find($category);
+        $this->repository->delete($category);
+        return successResponse(['category' => new CategoryResource($category)], Response::HTTP_OK, 'برند مورد نظر با موفقیت حذف شد.');
     }
 }

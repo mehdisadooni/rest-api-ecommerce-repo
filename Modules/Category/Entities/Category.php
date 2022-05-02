@@ -8,9 +8,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $guarded = [];
+
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($category) {
+            $category->children()->delete();
+        });
+    }
 
     public function children()
     {

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use \Modules\Category\Http\Controllers\Api\V1\CategoryController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -15,7 +16,9 @@ use \Modules\Category\Http\Controllers\Api\V1\CategoryController;
 
 
 Route::prefix('v1/')->group(function () {
-    Route::apiResource('categories',CategoryController::class);
-    Route::get('/categories/{category}/children',[CategoryController::class,'children']);
-    Route::get('/categories/{category}/parent',[CategoryController::class,'parent']);
+    Route::apiResource('categories', CategoryController::class);
+    Route::name('categories.')->group(function () {
+        Route::get('/categories/{category}/children', [CategoryController::class, 'children'])->name('children');
+        Route::get('/categories/{category}/parent', [CategoryController::class, 'parent'])->name('parent');
+    });
 });
