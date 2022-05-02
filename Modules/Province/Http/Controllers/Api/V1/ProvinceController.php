@@ -10,6 +10,7 @@ use Modules\Province\Http\Requests\StoreRequest;
 use Modules\Province\Http\Requests\UpdateRequest;
 use Modules\Province\Repositories\ProvincesRepositoryInterface;
 use Modules\Province\Transformers\ProvinceResource;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProvinceController extends Controller
 {
@@ -28,10 +29,10 @@ class ProvinceController extends Controller
     {
         $provinces = $this->repository->paginate(10);
         return successResponse([
-            'provinces' => ProvinceResource::collection($provinces->load('cities')),
+            'provinces' => ProvinceResource::collection($provinces),
             'links' => ProvinceResource::collection($provinces)->response()->getData()->links,
             'meta' => ProvinceResource::collection($provinces)->response()->getData()->meta,
-        ], 200);
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -46,7 +47,7 @@ class ProvinceController extends Controller
             'name' => $request->name,
         ]);
         DB::commit();
-        return successResponse(['province' => new ProvinceResource($province)], 201, 'استان با موفقیت با موفقیت ایجاد شد.');
+        return successResponse(['province' => new ProvinceResource($province)], Response::HTTP_CREATED, 'استان با موفقیت با موفقیت ایجاد شد.');
     }
 
     /**
@@ -57,7 +58,7 @@ class ProvinceController extends Controller
     public function show($province)
     {
         $province = $this->repository->find($province);
-        return successResponse(['province' => new ProvinceResource($province)], 200);
+        return successResponse(['province' => new ProvinceResource($province)], Response::HTTP_OK);
     }
 
 
@@ -73,7 +74,7 @@ class ProvinceController extends Controller
         $this->repository->update($province, [
             'name' => $request->name,
         ]);
-        return successResponse(['province' => new ProvinceResource($province)], 201, 'استان مورد نظر با موفقیت ویرایش شد.');
+        return successResponse(['province' => new ProvinceResource($province)], Response::HTTP_OK, 'استان مورد نظر با موفقیت ویرایش شد.');
     }
 
     /**
@@ -84,6 +85,6 @@ class ProvinceController extends Controller
     {
         $province = $this->repository->find($province);
         $this->repository->delete($province);
-        return successResponse(['province' => new ProvinceResource($province)], 200, 'استان مورد نظر با موفقیت حذف شد.');
+        return successResponse(['province' => new ProvinceResource($province)], Response::HTTP_OK, 'استان مورد نظر با موفقیت حذف شد.');
     }
 }
