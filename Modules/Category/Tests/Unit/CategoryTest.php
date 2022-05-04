@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Category\Tests\Unit\Http\Controllers\Api\V1;
+namespace Modules\Category\Tests\Unit;
 
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 use Modules\Category\Entities\Category;
 use Tests\TestCase;
 
-class CategoryControllerTest extends TestCase
+class CategoryTest extends TestCase
 {
     use RefreshDatabase;
 
