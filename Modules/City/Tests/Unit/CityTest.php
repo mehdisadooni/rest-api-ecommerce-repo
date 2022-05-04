@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\City\Tests\Unit\Http\Controllers\Api\V1;
+namespace Modules\City\Tests\Unit;
 
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -8,7 +8,7 @@ use Modules\City\Entities\City;
 use Modules\Province\Entities\Province;
 use Tests\TestCase;
 
-class CityControllerTest extends TestCase
+class CityTest extends TestCase
 {
     use RefreshDatabase;
 
