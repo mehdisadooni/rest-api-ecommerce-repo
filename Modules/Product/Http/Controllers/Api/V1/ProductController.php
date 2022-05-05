@@ -5,11 +5,13 @@ namespace Modules\Product\Http\Controllers\Api\V1;
 use Carbon\Carbon;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Modules\Product\Entities\Product;
 use Modules\Product\Entities\ProductImage;
 use Modules\Product\Http\Requests\StoreRequest;
 use Modules\Product\Http\Requests\UpdateRequest;
 use Modules\Product\Transformers\V1\ProductResource;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
 {
@@ -18,12 +20,12 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::paginate(1);
+        $products = Product::paginate(10);
         return successResponse([
-            'products' => ProductResource::collection($products->load('images')),
+            'products' => ProductResource::collection($products),
             'links' => ProductResource::collection($products)->response()->getData()->links,
             'meta' => ProductResource::collection($products)->response()->getData()->meta,
-        ], 200);
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -76,7 +78,7 @@ class ProductController extends Controller
             }
         }
         DB::commit();
-        return successResponse(new ProductResource($product->load('images')), 201, 'محصول با موفقیت ایجاد شد.');
+        return successResponse(['product' => new ProductResource($product)], Response::HTTP_CREATED, 'محصول با موفقیت ایجاد شد.');
     }
 
 
@@ -85,7 +87,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        return successResponse(['product' => new ProductResource($product->load('images'))], 200);
+        return successResponse(['product' => new ProductResource($product->load('images'))], Response::HTTP_OK);
     }
 
     /**
@@ -142,7 +144,7 @@ class ProductController extends Controller
             }
         }
         DB::commit();
-        return successResponse(['product' => new ProductResource($product->load('images'))], 200, 'product updated successfully');
+        return successResponse(['product' => new ProductResource($product)], Response::HTTP_OK, 'product updated successfully');
     }
 
     /**
@@ -151,6 +153,6 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
-        return successResponse(['product' => new ProductResource($product)], 200, 'product deleted successfully');
+        return successResponse(null, Response::HTTP_OK, 'product deleted successfully');
     }
 }

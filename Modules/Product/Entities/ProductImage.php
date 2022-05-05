@@ -12,6 +12,11 @@ class ProductImage extends Model
 
     protected $guarded = [];
 
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
     protected static function newFactory()
     {
         return \Modules\Product\Database\factories\ProductImageFactory::new();
